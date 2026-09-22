@@ -1,9 +1,6 @@
 import secrets
-from pydoc import plaintext
-
 import src.crypto.kfd as kfd
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-
 
 NONCE_LENGTH = 12
 AUTH_TAG_LENGTH = 16
@@ -42,15 +39,3 @@ def decrypt(key, nonce, ciphertext, authentication_tag):
     encrypted_data = ciphertext + authentication_tag
     desencrypted_data = aesgcm.decrypt(nonce, encrypted_data,None)
     return desencrypted_data
-
-salt = secrets.token_bytes(SALT_LENGTH)
-
-key = kfd.derive_key("MyPassword1234", salt,
-                     DEFAULT_MEMORY_COST, DEFAULT_TIME_COST,
-                     DEFAULT_PARALLELISM)
-
-text = b'Test data'
-encrypted_data = encrypt(key, text)
-decrypted_data = decrypt(key, encrypted_data['nonce'], encrypted_data['ciphertext'], encrypted_data['authentication_tag'])
-
-print(text == decrypted_data)
